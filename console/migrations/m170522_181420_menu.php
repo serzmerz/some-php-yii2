@@ -22,8 +22,8 @@ class m170522_181420_menu extends Migration
             'code' => $this->string(),
             'description' => $this->string(),
             'status' => $this->boolean()->defaultValue(true),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->timestamp()->defaultValue(null),
+            'updated_at' => $this->timestamp()->defaultValue(null),
         ], $tableOptions);
 
         $columns = ['id', 'name', 'code', 'description', 'status', 'created_at', 'updated_at'];
@@ -45,8 +45,8 @@ class m170522_181420_menu extends Migration
             'href' => $this->string(150)->notNull(),
             'sort' => $this->integer()->defaultValue(1),
             'status' => $this->boolean()->defaultValue(true),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->timestamp()->defaultValue(null),
+            'updated_at' => $this->timestamp()->defaultValue(null),
         ], $tableOptions);
 
         $columns = ['id', 'parent', 'menu', 'title', 'href', 'sort', 'status', 'created_at', 'updated_at'];
