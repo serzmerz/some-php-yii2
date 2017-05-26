@@ -38,6 +38,18 @@ class Investors extends \yii\db\ActiveRecord
         return 'investors';
     }
 
+    public static function dropdown()
+    {
+        static $dropdown;
+        if ($dropdown === null) {
+            $models = static::find()->all();
+            foreach ($models as $model) {
+                $dropdown[$model->id] = $model->name;
+            }
+        }
+        return $dropdown;
+    }
+
     /**
      * @inheritdoc
      */
