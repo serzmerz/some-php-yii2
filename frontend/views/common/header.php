@@ -10,7 +10,7 @@ $checkController = function($route){
 <header class="header" id="head">
     <?php
     SPNavBar::begin([
-        'brandLabel' => '<img src="/img/logo.png" alt="logo" class="hidden-xs hidden-sm"><img src="/img/logo-small.png" alt="logo" class="visible-xs visible-sm"><span class="sr-only">Go to homepage</span>',
+        'brandLabel' => '<img src="/image/logo.png" alt="logo" class="hidden-xs hidden-sm"><img src="/img/logo-small.png" alt="logo" class="visible-xs visible-sm"><span class="sr-only">Go to homepage</span>',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'tag' => 'div',
