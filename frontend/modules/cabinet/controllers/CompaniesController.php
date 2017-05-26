@@ -93,7 +93,7 @@ class CompaniesController extends AuthController
 
             $model->file = UploadedFile::getInstance($model, 'file');
             if($model->file && $model->validate()){
-                $path = 'image/' . Yii::$app->user->id . '/' . lcfirst($name_model);
+                $path = 'image/users/' . Yii::$app->user->id . '/' . lcfirst($name_model);
                 FileHelper::createDirectory($path);
                 $path .= '/' . $model->id . '.' . $model->file->extension;
                 $model->file->saveAs($path);
@@ -133,7 +133,7 @@ class CompaniesController extends AuthController
 
             $model->file = UploadedFile::getInstance($model, 'file');
             if($model->file && $model->validate()){
-                $path = 'image/' . Yii::$app->user->id . '/' . lcfirst($name_model);
+                $path = 'image/users/' . Yii::$app->user->id . '/' . lcfirst($name_model);
                 FileHelper::createDirectory($path);
                 $path .= '/' . $model->id . '.' . $model->file->extension;
                 $model->file->saveAs($path);
