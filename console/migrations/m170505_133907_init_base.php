@@ -32,8 +32,8 @@ class m170505_133907_init_base extends Migration
             'website' => $this->string(50),
             'user_id' => $this->integer()->notNull(),
             'status' => $this->boolean()->defaultValue(true),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->timestamp()->defaultValue(null),
+            'updated_at' => $this->timestamp()->defaultValue(null),
         ], $tableOptions);
 
         $this->createTable('{{%company_product_stage}}', [
@@ -76,8 +76,8 @@ class m170505_133907_init_base extends Migration
             'fax' => $this->string(50),
             'user_id' => $this->integer()->notNull(),
             'status' => $this->boolean()->defaultValue(true),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->timestamp()->defaultValue(null),
+            'updated_at' => $this->timestamp()->defaultValue(null),
         ], $tableOptions);
 
         $this->addForeignKey('{{%investor_user_id}}', '{{%investors}}', 'user_id', '{{%user}}', 'id');
