@@ -23,8 +23,8 @@ class m170522_191437_cooperation extends Migration
             'cooperation_status' => $this->integer()->defaultValue(1),
             'user_id' => $this->integer()->notNull(),
             'status' => $this->boolean()->defaultValue(true),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->timestamp()->defaultValue(null),
+            'updated_at' => $this->timestamp()->defaultValue(null),
         ], $tableOptions);
 
         $this->createTable('{{%cooperation_tables}}', [
