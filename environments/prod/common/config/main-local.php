@@ -4,9 +4,9 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=carzcomu_tangle',
-            'username' => 'carzcomu_tangle',
-            'password' => '.]e$0uS07p$q',
+            'dsn' => 'mysql:host=localhost;dbname=tangle',
+            'username' => 'tangle',
+            'password' => 'U}9RP3f&7pg7f*s=',
             'charset' => 'utf8',
         ],
 
