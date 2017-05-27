@@ -301,30 +301,33 @@ class CooperationController extends AuthController
     }
 
     public function actionCreateCompany($id){
-        $user_id = Yii::$app->user->identity->getId();
-        $model = new Cooperation();
-        if(!empty(Yii::$app->getRequest()->post()['parent_id']))
-            $model->parent_id = Yii::$app->getRequest()->post()['parent_id'];
-        else $this->redirect(['//companies/index']);
-        $model->cooperation_table = 1;
-        $model->cooperation_id = $id;
-        $model->user_id = $user_id;
-         $date = new \DateTime('now');
-        $date = $date->format('Y-m-d H:i:s');
-        $model->created_at = $date;
+        if(empty(Yii::$app->getRequest()->post()['parent_id'])){
+            return $this->redirect(['//companies/index']);
+        }
+        else {
+            $user_id = Yii::$app->user->identity->getId();
+            $model = new Cooperation();
+                $model->parent_id = Yii::$app->getRequest()->post()['parent_id'];
 
-        $model->parent_table = 2;
-        if(Cooperation::find()->where(['cooperation_id' => $id, 'cooperation_table'=> 1,'user_id' =>$user_id, 'status'=>1])->exists()){
-            return '<p>You early added this company to cooperation`s</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
-        }
-        if(Companies::find()->where(['id'=>$id, 'user_id'=>$user_id])->exists()){
-            return '<p>This is you company</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
-        }
-        if($model->save()){
-            return '<p>Company added to you cooperation</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
-        }
-        return '<p>Error! Company not added</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
+            $model->cooperation_table = 1;
+            $model->cooperation_id = $id;
+            $model->user_id = $user_id;
+            $date = new \DateTime('now');
+            $date = $date->format('Y-m-d H:i:s');
+            $model->created_at = $date;
 
+            $model->parent_table = 2;
+            if (Cooperation::find()->where(['cooperation_id' => $id, 'cooperation_table' => 1, 'user_id' => $user_id, 'status' => 1])->exists()) {
+                return '<p>You early added this company to cooperation`s</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
+            }
+            if (Companies::find()->where(['id' => $id, 'user_id' => $user_id])->exists()) {
+                return '<p>This is you company</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
+            }
+            if ($model->save()) {
+                return '<p>Company added to you cooperation</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
+            }
+            return '<p>Error! Company not added</p><a data-dismiss="modal" class="btn btn-success">Ok</a>';
+        }
     }
 
     public function actionCreateInvestors($id){
