@@ -12,12 +12,8 @@ $breadcrumbs = Breadcrumbs::widget([
 <section id="request-cooperation">
 
     <?=$this->render('_formApprovedRequest', [
-        'count' => $count,
-        'modelCompanies' => $modelCompanies,
-        'pages' => $pages,
-        'count2' => $count2,
-        'modelInvestors' => $modelInvestors,
-        'pages2' => $pages2,
+        'arrayModelCompaniesRequest' => $arrayModelCompaniesRequest,
+        'arrayModelInvestorsRequest' =>$arrayModelInvestorsRequest,
     ])?>
 
 </section>
@@ -25,12 +21,8 @@ $breadcrumbs = Breadcrumbs::widget([
 <section id="response-cooperation">
 
     <?=$this->render('_formApprovedResponse', [
-        'count' => $countResponse,
-        'modelCompanies' => $modelCompaniesResponse,
-        'pages' => $pagesResponse,
-        'count2' => $count2Response,
-        'modelInvestors' => $modelInvestorsResponse,
-        'pages2' => $pages2Response,
+        'arrayModelCompaniesResponse' => $arrayModelCompaniesResponse,
+        'arrayModelInvestorsResponse' =>$arrayModelInvestorsResponse,
     ])?>
 
 </section>

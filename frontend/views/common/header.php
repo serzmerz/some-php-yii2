@@ -24,6 +24,19 @@ $checkController = function($route){
         'screenReaderToggleText' => 'Menu<i class="fa fa-align-justify"></i>',
     ]);
 
+
+    $query = \common\models\MenuItem::find()->where(['menu'=>3])->all();
+    $menuArray = [];
+    foreach ($query as $item) {
+        $menuArray[] = [
+            'label' => $item['title'],
+            'url' => $item['href'],
+            'active' => $checkController(strtolower($item['title']))
+        ];
+    }
+    debug($menuArray);
+
+    $query = \common\models\MenuItem::find()->where([''])->all();
     $menuItems = [
         // ['label' => 'Search', 'url' => ['/search'], 'active' => $checkController('search')],
         /*[
@@ -32,23 +45,10 @@ $checkController = function($route){
             'active' => $checkController('cabinet/cooperation')
         ],*/
         [
-            'label' => '<i class="fa fa-star "></i>',
-            'items' => [
-                ['label' => 'input', 'url' => '/cabinet/cooperation/input'],
-                ['label' => 'out', 'url' => '/cabinet/cooperation/out'],
-                ['label' => 'approved', 'url' => '/cabinet/cooperation/approved'],
-            ],
+            'label' => 'Search',
+            'items' => $menuArray
         ],
-        [
-            'label' => 'My Companies',
-            'url' => ['/cabinet/companies'],
-            'active' => $checkController('cabinet/companies')
-        ],
-        [
-            'label' => 'My Investors',
-            'url' => ['/cabinet/investors'],
-            'active' => $checkController('cabinet/investors')
-        ],
+
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = [
@@ -63,12 +63,38 @@ $checkController = function($route){
         ];
     } else {
         $menuItems[] = [
-            'label' => 'Log out (' . Yii::$app->user->displayName . ')',
-            'url' => ['/user/logout'],
-            'linkOptions' => [
+            'label' => Yii::$app->user->displayName,
+            //'url' => ['/user/logout'],
+            /*'linkOptions' => [
                 'data-method' => 'post',
                 'style' => 'font-weight: 700;',
-            ]
+            ]*/
+            'items' => [
+                [
+                    'label' => 'My Companies',
+                    'url' => ['/cabinet/companies'],
+                    'active' => $checkController('cabinet/companies')
+                ],
+                [
+                    'label' => 'My Investors',
+                    'url' => ['/cabinet/investors'],
+                    'active' => $checkController('cabinet/investors')
+                ],
+                [
+                    'label' => 'Cooperation`s',
+                    'url' => ['/cabinet/cooperation'],
+                    'active' => $checkController('cabinet/cooperation')
+                ],
+                [
+                    'label' => 'Log out',
+                    'url' => ['/user/logout'],
+                    'linkOptions' => [
+                        'data-method' => 'post',
+                        'style' => 'font-weight: 700;',
+                    ]
+                ],
+            ],
+
         ];
     }
     echo Nav::widget([

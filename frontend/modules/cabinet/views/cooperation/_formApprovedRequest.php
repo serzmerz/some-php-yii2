@@ -7,9 +7,9 @@ use yii\widgets\Pjax;
 
 <div class="container">
     <h3 class="heading">
-        You approved: <span class="accent"><?=$count+$count2?></span> requests</h3>
+        You approved: <span class="accent"><?=$arrayModelCompaniesRequest['count']+$arrayModelInvestorsRequest['count']?></span> requests</h3>
     <h4>Companies:</h4>
-    <?php foreach($modelCompanies as $model){ ?>
+    <?php foreach($arrayModelCompaniesRequest['model'] as $model){ ?>
         <div class="job-listing">
             <div class="row">
                 <div class="col-sm-12 col-md-6">
@@ -37,12 +37,12 @@ use yii\widgets\Pjax;
                             success: function(data){
                             if(data){alert('Successful!');
                             $.ajax({
-                            url:'<?php echo Url::to(['cooperation/out'])?>',
+                            url:'<?php echo Url::to(['cooperation/approved'])?>',
                             type: 'post',
                             data:{'q':'1'},
                             response:'text',
                             success:function (html) {
-                            $('#companies-cooperation').html(html);
+                            $('#request-cooperation').html(html);
                             }
                             });
                             }
@@ -54,13 +54,29 @@ use yii\widgets\Pjax;
                         <?php Pjax::end(); ?>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <h4>From:</h4>
+                        <div class="row">
+                            <div class="col-xs-2"><img src="<?=$model['inv_img']?>" class="img-responsive"></div>
+                            <div class="col-xs-10">
+                                <h4 class="job__title">
+                                    <?=Html::a($model['inv_name'], [Url::to(['//investors/view','id'=>$model['inv_id']])])?>
+                                </h4>
+                                <p class="job__company"><?=$model['inv_description']?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     <?php } ?>
-    <?= LinkPager::widget(['pagination' => $pages])?>
+    <?= LinkPager::widget(['pagination' => $arrayModelCompaniesRequest['pages']])?>
 
     <h4>Investors:</h4>
-    <?php foreach($modelInvestors as $model){ ?>
+    <?php foreach($arrayModelInvestorsRequest['model'] as $model){ ?>
         <div class="job-listing">
             <div class="row">
                 <div class="col-sm-12 col-md-6">
@@ -87,12 +103,12 @@ use yii\widgets\Pjax;
                         success: function(data){
                         if(data){alert('Successful!');
                         $.ajax({
-                        url:'<?php echo Url::to(['cooperation/out'])?>',
+                        url:'<?php echo Url::to(['cooperation/approved'])?>',
                         type: 'post',
                         data:{'q':'1'},
                         response:'text',
                         success:function (html) {
-                        $('#companies-cooperation').html(html);
+                        $('#request-cooperation').html(html);
                         }
                         });
                         }
@@ -103,8 +119,24 @@ use yii\widgets\Pjax;
                     </a>
                     <?php Pjax::end(); ?>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <h4>From:</h4>
+                        <div class="row">
+                            <div class="col-xs-2"><img src="<?=$model['com_img']?>" class="img-responsive"></div>
+                            <div class="col-xs-10">
+                                <h4 class="job__title">
+                                    <?=Html::a($model['com_name'], [Url::to(['//companies/view','id'=>$model['com_id']])])?>
+                                </h4>
+                                <p class="job__company"><?=$model['com_description']?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     <?php } ?>
-    <?= LinkPager::widget(['pagination' => $pages2])?>
+    <?= LinkPager::widget(['pagination' => $arrayModelInvestorsRequest['pages']])?>
 </div>

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\data\Pagination;
 
 /**
  * This is the model class for table "investors".
@@ -95,10 +96,10 @@ class Investors extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-/*    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }*/
+    /*    public function getUser()
+        {
+            return $this->hasOne(User::className(), ['id' => 'user_id']);
+        }*/
 
     /**
      * @inheritdoc
@@ -108,8 +109,42 @@ class Investors extends \yii\db\ActiveRecord
     {
         return new InvestorsQuery(get_called_class());
     }
+
     public function getCooperation()
     {
         return $this->hasOne(Cooperation::className(), ['cooperation_id' => 'id']);
+    }
+
+    /**
+     * @param $arrayWhereParams
+     * @return array
+     */
+    public static function findInvestors($arrayWhereParams)
+    {
+        $allInvestors = Investors::find()
+            ->select('c.*, st.status cop_status, cooperation.id cop_id, com.id com_id,
+             com.img_url com_img, com.description com_description, com.name com_name')
+            ->from(Investors::tableName() . ' c')
+            ->innerJoinWith(['cooperation' => function ($query) {
+                $query->onCondition(['cooperation_table' => 2]);
+            }])
+            ->leftJoin('cooperation_statuses st', 'cooperation.cooperation_status = st.id')
+            ->leftJoin('companies com', 'cooperation.parent_id=com.id')
+            ->where($arrayWhereParams);
+
+        $clone_query = clone $allInvestors;
+        $count = $clone_query->count();
+        $pages = new Pagination(['totalCount' => $count]);
+        $modelsInvestor = $allInvestors->offset($pages->offset)
+            ->limit($pages->limit)
+            ->orderBy(['c.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        return $array = [
+            'count' => $count,
+            'model' => $modelsInvestor,
+            'pages' => $pages,
+        ];
     }
 }

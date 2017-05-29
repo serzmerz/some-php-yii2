@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -96,32 +97,36 @@ class Companies extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-/*    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }*/
+    /*    public function getUser()
+        {
+            return $this->hasOne(User::className(), ['id' => 'user_id']);
+        }*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProductStageAll(){
+    public function getProductStageAll()
+    {
         $models = CompanyProductStage::find()->asArray()->all();
         return ArrayHelper::map($models, 'id', 'stage');
     }
 
-    public function getProductStage(){
+    public function getProductStage()
+    {
         return $this->hasOne(CompanyProductStage::className(), ['id' => 'product_stage']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRaisingAll(){
+    public function getRaisingAll()
+    {
         $models = CompanyRaising::find()->asArray()->all();
         return ArrayHelper::map($models, 'id', 'raising');
     }
 
-    public function getRaising0(){
+    public function getRaising0()
+    {
         return $this->hasOne(CompanyRaising::className(), ['id' => 'raising']);
     }
 
@@ -129,12 +134,14 @@ class Companies extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRevenueAll(){
+    public function getRevenueAll()
+    {
         $models = CompanyRevenue::find()->asArray()->all();
         return ArrayHelper::map($models, 'id', 'revenue');
     }
 
-    public function getRevenue0(){
+    public function getRevenue0()
+    {
         return $this->hasOne(CompanyRevenue::className(), ['id' => 'revenue']);
     }
 
@@ -150,5 +157,36 @@ class Companies extends \yii\db\ActiveRecord
     public static function find()
     {
         return new CompaniesQuery(get_called_class());
+    }
+
+    public static function findCompanies($arrayWhereParams)
+    {
+        $allCompanies = Companies::find()
+            ->select('c.*, s.stage product_stage, st.status cop_status,
+             cooperation.id cop_id, inv.id inv_id, inv.name inv_name,
+              inv.img_url inv_img, inv.description inv_description')
+            ->from(Companies::tableName() . ' c')
+            ->leftJoin('company_product_stage s', 'c.product_stage = s.id')
+            ->innerJoinWith(['cooperation' => function ($query) {
+                $query->onCondition(['cooperation_table' => 1]);
+            }])
+            ->leftJoin('cooperation_statuses st', 'cooperation.cooperation_status = st.id')
+            ->leftJoin('investors inv', 'cooperation.parent_id=inv.id')
+            ->where($arrayWhereParams);
+
+        $clone_query = clone $allCompanies;
+        $count = $clone_query->count();
+        $pages = new Pagination(['totalCount' => $count]);
+        $modelCompanies = $allCompanies->offset($pages->offset)
+            ->limit($pages->limit)
+            ->orderBy(['c.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+        return $array = [
+            'count' => $count,
+            'model' => $modelCompanies,
+            'pages' => $pages,
+        ];
+
     }
 }

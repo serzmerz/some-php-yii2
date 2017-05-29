@@ -7,9 +7,9 @@ use yii\widgets\Pjax;
 ?>
 <div class="container">
     <h3 class="heading">
-        Incoming proposals for investors: <span class="accent"><?= $count2?></span></h3>
+        Incoming proposals for investors: <span class="accent"><?= $arrayModelInvestors['count']?></span></h3>
 
-    <?php foreach($modelInvestors as $model){ ?>
+    <?php foreach($arrayModelInvestors['model'] as $model){ ?>
         <div class="job-listing">
             <div class="row">
                 <div class="col-sm-12 col-md-6">
@@ -69,8 +69,24 @@ use yii\widgets\Pjax;
                         <?php Pjax::end(); ?>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <h4>From:</h4>
+                        <div class="row">
+                            <div class="col-xs-2"><img src="<?=$model['com_img']?>" class="img-responsive"></div>
+                            <div class="col-xs-10">
+                                <h4 class="job__title">
+                                    <?=Html::a($model['com_name'], [Url::to(['//companies/view','id'=>$model['com_id']])])?>
+                                </h4>
+                                <p class="job__company"><?=$model['com_description']?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     <?php } ?>
-    <?= LinkPager::widget(['pagination' => $pages2])?>
+    <?= LinkPager::widget(['pagination' => $arrayModelInvestors['pages']])?>
 </div>

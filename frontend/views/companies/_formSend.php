@@ -10,18 +10,22 @@ use yii\widgets\Pjax;
 ?>
 
 <?php Pjax::begin(); ?>
-
-
+<?php
+if(!Yii::$app->user->isGuest)
+    $user_id = Yii::$app->user->identity->getId();
+else $user_id = null;
+if(Investors::find()->where(['user_id'=>$user_id])->exists()){
+$investors = Investors::find()->where(['user_id'=>Yii::$app->user->identity->getId()])->all();
+$items = ArrayHelper::map($investors,'id','name');
+$params = [
+    'style' => 'width:300px',
+    'id' => 'name'
+];
+?>
 <div class="request-form">
     <?php $form = ActiveForm::begin(['action' =>Url::to(['cabinet/cooperation/create-company','id'=>$id_notice]), 'method' => 'post','options' => ['data' => ['pjax' => true]]]); ?>
 
-    <?php $investors = Investors::find()->where(['user_id'=>Yii::$app->user->identity->getId()])->all();
-    $items = ArrayHelper::map($investors,'id','name');
-    $params = [
-    'style' => 'width:300px',
-        'id' => 'name'
-    ];
-    ?>
+
     <?=Html::label('Select your investor:','parent_id')?>
     <?=Html::dropDownList('parent_id', 'null', $items,$params);?>
 
@@ -30,6 +34,9 @@ use yii\widgets\Pjax;
 </div>
 <?php ActiveForm::end(); ?>
 </div>
+<?php }
+else echo "<p>You don`t hava any investors</p>";
+?>
 <?php Pjax::end(); ?>
 
 
