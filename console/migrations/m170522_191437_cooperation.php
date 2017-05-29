@@ -20,6 +20,8 @@ class m170522_191437_cooperation extends Migration
             'id' => $this->primaryKey(),
             'cooperation_table' => $this->integer()->notNull(),
             'cooperation_id' => $this->integer()->notNull(),
+            'parent_table' => $this->integer()->notNull(),
+            'parent_id' => $this->integer()->notNull(),
             'cooperation_status' => $this->integer()->defaultValue(1),
             'user_id' => $this->integer()->notNull(),
             'status' => $this->boolean()->defaultValue(true),
