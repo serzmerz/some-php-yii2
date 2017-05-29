@@ -123,12 +123,13 @@ class MenuItem extends \yii\db\ActiveRecord
         $menuItems[] =
                 [
                     'label' => 'Search',
-                    'items' => $menuArray
+                    'items' => $menuArray,
                 ];
         $menuItems[] =
                 [
                     'label' => Yii::$app->user->displayName,
-                    'items' => $menuCabinet
+                    'items' => $menuCabinet,
+                    'visible' => !Yii::$app->user->isGuest,
                 ];
 
 
