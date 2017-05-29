@@ -7,8 +7,8 @@ use yii\widgets\Pjax;
 ?>
 <div class="container">
     <h3 class="heading">
-        You likes <span class="accent"><?=$count?></span> startups</h3>
-    <?php foreach($modelCompanies as $model){ ?>
+        You likes <span class="accent"><?=$arrayModelCompanies['count']?></span> startups</h3>
+    <?php foreach($arrayModelCompanies['model'] as $model){ ?>
         <div class="job-listing">
             <div class="row">
                 <div class="col-sm-12 col-md-6">
@@ -16,7 +16,7 @@ use yii\widgets\Pjax;
                         <div class="col-xs-2"><img src="<?=$model['img_url']?>" class="img-responsive"></div>
                         <div class="col-xs-10">
                             <h4 class="job__title">
-                                <?=Html::a($model['name'], ['view?id=' . $model['id']])?>
+                                <?=Html::a($model['name'], [Url::to(['//companies/view','id'=>$model['id']])])?>
                             </h4>
                             <p class="job__company"><?=$model['description']?></p>
                         </div>
@@ -53,8 +53,25 @@ use yii\widgets\Pjax;
                         <?php Pjax::end(); ?>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <h4>From:</h4>
+                        <div class="row">
+                            <div class="col-xs-2"><img src="<?=$model['inv_img']?>" class="img-responsive"></div>
+                            <div class="col-xs-10">
+                                <h4 class="job__title">
+                                    <?=Html::a($model['inv_name'], [Url::to(['//investors/view','id'=>$model['inv_id']])])?>
+                                </h4>
+                                <p class="job__company"><?=$model['inv_description']?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </div>
     <?php } ?>
-    <?= LinkPager::widget(['pagination' => $pages])?>
+    <?= LinkPager::widget(['pagination' => $arrayModelCompanies['pages']])?>
 </div>

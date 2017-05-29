@@ -30,25 +30,28 @@ use yii\widgets\Pjax;
               <div class="col-xs-10 col-xs-offset-2 col-sm-2 col-sm-offset-0 col-md-1">
                   <div class="job__star">
                       <?php Pjax::begin(); ?>
-                      <a onclick="<?php if(!Yii::$app->user->isGuest) echo "$.ajax({
-                            url: '". Url::to(['cabinet/cooperation/create-investors', 'id' => $model['id']])."',
-                            success: function(data){
-                            switch(data){
-                            case '0':alert('You early added this company to cooperation\'s');break;
-                            case '1':alert('You added this company to cooperation');break;
-                            case '2':alert('Error! Company not added');break;
-                            case '3':alert('This is you investor');break;
-                            default: alert('Error!');
-                            }
-                            }});"; ?>"
-                         data-user="" data-company="0" href="<?php if(Yii::$app->user->isGuest) echo Url::to(['user/login']); ?>" data-toggle="tooltip" data-placement="top"
+                      <a id="job_star<?=$model['id']?>" data-user="" data-company="0" href="<?php if(Yii::$app->user->isGuest) echo Url::to(['user/login']); ?>" data-toggle="modal" data-placement="top"
                          title=""
                          class="job__star__link followbtn <?php if(!empty($model['cooperation_id']))
                              echo "added_link";
                          ?>"
-                         data-original-title="Save to my companies">
+                         data-original-title="Save to my investor" data-target="#modal<?=$model['id']?>">
                           <i class="fa fa-star "></i></a>
                       <?php Pjax::end(); ?>
+                      <?php
+                      yii\bootstrap\Modal::begin([
+                          'headerOptions' => ['id' => 'modalHeader','class'=>'text-center'],
+                          'header' => '<h2>Add to cooperation`s</h2>',
+                          'id' => 'modal'.$model['id'],
+                          //'size' => 'modal-lg',
+                          //'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE],
+                          //'options'=>['style'=>'min-width:300px'],
+                      ]);
+                      echo $this->context->renderPartial('_formSend', [
+                          'id_notice' =>$model['id']
+                      ]);
+                      yii\bootstrap\Modal::end();
+                      ?>
                   </div>
               </div>
             </div>

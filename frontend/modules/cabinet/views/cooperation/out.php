@@ -13,15 +13,11 @@ $breadcrumbs = Breadcrumbs::widget([
 ?>
 <section id="companies-cooperation">
     <?=$this->render('_formOutCompany', [
-        'count' => $count,
-        'modelCompanies' => $modelCompanies,
-        'pages' => $pages
+        'arrayModelCompanies' => $arrayModelCompanies,
     ])?>
 </section>
 <section id="investors-cooperation">
     <?=$this->render('_formOutInvestors', [
-        'count2' => $count2,
-        'modelInvestors' => $modelInvestors,
-        'pages2' => $pages2
+        'arrayModelInvestors' =>$arrayModelInvestors,
     ])?>
 </section>
