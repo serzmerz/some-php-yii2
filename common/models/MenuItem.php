@@ -69,7 +69,8 @@ class MenuItem extends \yii\db\ActiveRecord
         return $this->hasOne(Menu::className(), ['id' => 'menu']);
     }
 
-    public static function getMenuItems($param){
+    public static function getMenuItems($param)
+    {
         $checkController = function ($route) use ($param) {
             return $route === $param;
         };
@@ -90,7 +91,7 @@ class MenuItem extends \yii\db\ActiveRecord
         foreach ($query2 as $item) {
             $menuCabinet[] = [
                 'label' => $item['title'],
-                'url' => '/'.$item['href'],
+                'url' => '/' . $item['href'],
                 'active' => $checkController(strtolower($item['href']))
             ];
         }
@@ -102,33 +103,35 @@ class MenuItem extends \yii\db\ActiveRecord
                 'style' => 'font-weight: 700;',
             ]
         ];
-        $menuItems =
-            [
-                [
-                    'label' => 'Search',
-                    'items' => $menuArray
-                ],
-                [
-                    'label' => Yii::$app->user->displayName,
-                    'items' => $menuCabinet
-                ],
-            ];
-
-        if($checkController('cabinet/cooperation')){
+        if ($checkController('cabinet/cooperation')) {
             $menuCooperation = [];
             $query3 = MenuItem::find()->where(['menu' => 4])->all();
-            foreach ($query3 as $item){
+            foreach ($query3 as $item) {
                 $menuCooperation[] = [
                     'label' => $item['title'],
-                    'url' => '/'.$item['href'],
+                    'url' => '/' . $item['href'],
                     'active' => $checkController(strtolower($item['title']))
                 ];
             }
-            $menuItems[] = [
-                'label' => 'Cooperation`s',
-                'items' => $menuCooperation,
-            ];
+            $menuItems[] =
+                [
+                    'label' => 'Cooperation`s',
+                    'items' => $menuCooperation,
+                ];
         }
+
+        $menuItems[] =
+                [
+                    'label' => 'Search',
+                    'items' => $menuArray
+                ];
+        $menuItems[] =
+                [
+                    'label' => Yii::$app->user->displayName,
+                    'items' => $menuCabinet
+                ];
+
+
         return $menuItems;
     }
 }
