@@ -57,8 +57,22 @@ return [
                     '@vendor/amnah/yii2-user/views' => '@app/views/user',
                 ],
             ],
-        ],
-
+            'class' => 'yii\web\View',
+            'renderers' => [
+                'twig' => [
+                    'class' => 'yii\twig\ViewRenderer',
+                    'cachePath' => '@runtime/Twig/cache',
+                    // Array of twig options:
+                    'options' => [
+                        'auto_reload' => true,
+                    ],
+                    'globals' => [
+                        'html' => ['class' => '\yii\helpers\Html'],
+                    ],
+                    'uses' => ['yii\bootstrap'],
+                ],
+                ],
+            ],
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
             'clients' => [
