@@ -9,7 +9,7 @@ $params = array_merge(
 return [
     'id' => 'app-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['simplechat'],
     'controllerNamespace' => 'console\controllers',
     'controllerMap' => [
         'fixture' => [
@@ -26,6 +26,11 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+    ],
+    'modules' => [
+        'simplechat' => [
+            'class' => 'bubasuma\simplechat\Module',
         ],
     ],
     'params' => $params,
