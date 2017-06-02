@@ -2,6 +2,8 @@
 
 namespace app\modules\cabinet\controllers;
 
+use bubasuma\simplechat\db\Conversation;
+use bubasuma\simplechat\models\Message;
 use common\models\Cooperation;
 use common\models\CooperationStatuses;
 use common\models\Investors;
@@ -44,9 +46,12 @@ class CooperationController extends AuthController
     {
         $user_id = Yii::$app->user->identity->getId();
 
-        $arrayWhereParams = ['c.status' => 1, 'cooperation.user_id' => $user_id, 'cooperation.status' => 1];
+        $arrayWhereParams = ['c.status' => 1, 'cooperation.user_id' => $user_id, 'cooperation.status' => 1,'cooperation.cooperation_status' => [1,3]];
+        //$arrayWhereParamsCop = ['c.user_id' => $user_id, 'c.status' => 1,'c.cooperation_status' => [1,3]];
+        $arrayWhereParamsApproved = ['c.status' => 1, 'cooperation.user_id' => $user_id,
+            'cooperation.status' => 1, 'cooperation.cooperation_status' => 2];
 
-        $arrayModelCompanies = Companies::findCompanies($arrayWhereParams);
+        /*$arrayModelCompanies = Companies::findCompanies($arrayWhereParams);
         $arrayModelInvestors = Investors::findInvestors($arrayWhereParams);
 
         if (Yii::$app->request->isPost) {
@@ -65,7 +70,30 @@ class CooperationController extends AuthController
                 'arrayModelCompanies' => $arrayModelCompanies,
                 'arrayModelInvestors' =>$arrayModelInvestors,
             ]);
+        }*/
+        $model = Companies::findForOut($arrayWhereParams);
+        $modelApproved = Companies::findForOutApproved($arrayWhereParamsApproved);
+        //$modelCooperation = Companies::findForOutCooperation($arrayWhereParamsCop);
+        //debug($modelCooperation);
+
+        if (Yii::$app->request->isPost) {
+            if (Yii::$app->getRequest()->post()['q'] === '1') {
+                return $this->renderAjax('_formOut', [
+                    'model' => $model,
+                ]);
+            }
+            if (Yii::$app->getRequest()->post()['q'] === '2') {
+                return $this->renderAjax('_formOutApproved', [
+                    'model' => $modelApproved,
+                ]);
+            }
+        } else {
+            return $this->render('out', [
+                'model' => $model,
+                'modelApproved' => $modelApproved,
+            ]);
         }
+
     }
 
     public function actionInput()
@@ -74,31 +102,32 @@ class CooperationController extends AuthController
         $user_id = Yii::$app->user->identity->getId();
 
         $arrayWhereParams = ['c.status' => 1, 'c.user_id' => $user_id, 'st.id' => 1,'cooperation.status' => 1];
+        $arrayWhereParamsRequest = ['c.status' => 1, 'c.user_id' => $user_id, 'st.id' => 2, 'cooperation.status' => 1];
 
-        $arrayModelCompanies = Companies::findCompanies($arrayWhereParams);
-        $arrayModelInvestors = Investors::findInvestors($arrayWhereParams);
-
-
+        //$arrayModelCompanies = Companies::findCompanies($arrayWhereParams);
+        //$arrayModelInvestors = Investors::findInvestors($arrayWhereParams);
+        $model = Companies::findForOut($arrayWhereParams);
+        $modelApproved = Companies::findForOutApproved($arrayWhereParamsRequest);
         if (Yii::$app->request->isPost) {
             if (Yii::$app->getRequest()->post()['q'] === '1') {
-                return $this->renderAjax('_formCompany', [
-                    'arrayModelCompanies' => $arrayModelCompanies,
+                return $this->renderAjax('_formInput', [
+                    'model' => $model,
                 ]);
             }
             if (Yii::$app->getRequest()->post()['q'] === '2') {
-                return $this->renderAjax('_formInvestors', [
-                    'arrayModelInvestors' =>$arrayModelInvestors,
+                return $this->renderAjax('_formInputApproved', [
+                    'model' =>$modelApproved,
                 ]);
             }
         } else {
             return $this->render('input', [
-                'arrayModelCompanies' => $arrayModelCompanies,
-                'arrayModelInvestors' =>$arrayModelInvestors,
+                'model' => $model,
+                'modelApproved' => $modelApproved,
             ]);
-        }
+       }
     }
 
-    public function actionApproved()
+    /*public function actionApproved()
     {
         $user_id = Yii::$app->user->identity->getId();
 
@@ -132,7 +161,7 @@ class CooperationController extends AuthController
                 'arrayModelInvestorsResponse' =>$arrayModelInvestorsResponse,
             ]);
         }
-    }
+    }*/
 
     public function actionCreateCompany($id)
     {
@@ -197,6 +226,11 @@ class CooperationController extends AuthController
     {
         $model = $this->findModel($id);
         $model->cooperation_status = $cooperation_status;
+
+        \bubasuma\simplechat\db\Message::create($model->cooperation_id,
+            $model->cooperation_table,$model->parent_id,
+            $model->parent_table, "Initial massage");
+
         if ($model->save()) {
             return true;
         } else {

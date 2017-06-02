@@ -83,7 +83,7 @@ class CompaniesController extends \yii\web\Controller
 
         $clone_query = clone $query;
         $count = $clone_query->count();
-        $pages = new Pagination(['totalCount' => $count, 'pageSize' => 7]);
+        $pages = new Pagination(['totalCount' => $count, 'pageSize' => 5]);
         $pages->pageSizeParam = false;
         if(isset($post))
             $pages->params = ['name' => $post['name']];

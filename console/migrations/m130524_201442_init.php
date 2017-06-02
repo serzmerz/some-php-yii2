@@ -52,6 +52,9 @@ class m130524_201442_init extends Migration
             'created_at' => Schema::TYPE_TIMESTAMP . ' null',
             'updated_at' => Schema::TYPE_TIMESTAMP . ' null',
             'full_name' => Schema::TYPE_STRING . ' null',
+            'first_name' => Schema::TYPE_STRING . ' null',
+            'last_name' => Schema::TYPE_STRING . ' null',
+            'avatar' => Schema::TYPE_STRING . ' null',
             'timezone' => Schema::TYPE_STRING . ' null',
         ], $tableOptions);
         $this->createTable('{{%user_auth}}', [

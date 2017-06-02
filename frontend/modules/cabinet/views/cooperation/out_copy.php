@@ -12,12 +12,12 @@ $breadcrumbs = Breadcrumbs::widget([
 ]);
 ?>
 <section id="companies-cooperation">
-    <?=$this->render('_formOut', [
-        'model' => $model,
+    <?=$this->render('_formOutCompany', [
+        'arrayModelCompanies' => $arrayModelCompanies,
     ])?>
 </section>
-<section id="approved-cooperation">
-    <?=$this->render('_formOutApproved', [
-        'model' =>$modelApproved
+<section id="investors-cooperation">
+    <?=$this->render('_formOutInvestors', [
+        'arrayModelInvestors' =>$arrayModelInvestors,
     ])?>
 </section>
