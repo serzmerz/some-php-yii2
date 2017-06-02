@@ -3,10 +3,10 @@
 namespace app\modules\cabinet\controllers;
 
 use bubasuma\simplechat\db\Conversation;
-use bubasuma\simplechat\models\Message;
 use common\models\Cooperation;
 use common\models\CooperationStatuses;
 use common\models\Investors;
+use frontend\models\Message;
 use Yii;
 use common\models\Companies;
 
@@ -227,7 +227,7 @@ class CooperationController extends AuthController
         $model = $this->findModel($id);
         $model->cooperation_status = $cooperation_status;
 
-        \bubasuma\simplechat\db\Message::create($model->cooperation_id,
+        Message::create($model->cooperation_id,
             $model->cooperation_table,$model->parent_id,
             $model->parent_table, "Initial massage");
 
