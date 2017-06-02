@@ -7,7 +7,6 @@ use bubasuma\simplechat\controllers\DefaultController;
 use common\models\Companies;
 use common\models\Investors;
 use frontend\models\Conversation;
-use frontend\models\Message;
 use Yii;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
