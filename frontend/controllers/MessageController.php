@@ -3,16 +3,13 @@ namespace frontend\controllers;
 
 //...
 use bubasuma\simplechat\controllers\DefaultController;
-use bubasuma\simplechat\models\Conversation;
-use bubasuma\simplechat\models\Message;
-use bubasuma\simplechat\models\User;
-use bubasuma\simplechat\Module;
+
 use common\models\Companies;
 use common\models\Investors;
+use frontend\models\Conversation;
+use frontend\models\Message;
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
@@ -21,6 +18,8 @@ use yii\web\NotFoundHttpException;
 
 class MessageController extends DefaultController
 {
+
+    protected $_user;
 
     protected $_table;
 
@@ -101,12 +100,12 @@ class MessageController extends DefaultController
      * @param $table
      * override
      */
-    public function setUser($userId, $table)
+    public function setUser($userId, $table = null)
     {
         \Yii::$app->session->set($this->module->id . '_user', (int)$userId);
         \Yii::$app->session->set($this->module->id . '_table', (int)$table);
     }
-    public function actionLoginAs($userId, $table)
+    public function actionLoginAs($userId, $table = null)
     {
         $this->setUser((int)$userId, (int)$table);
         return $this->redirect(['index']);

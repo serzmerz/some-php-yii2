@@ -1,7 +1,7 @@
 {{ use('bubasuma/simplechat/ConversationWidget') }}
 {{ use('bubasuma/simplechat/MessageWidget') }}
 
-{% set asset = register_asset_bundle('bubasuma/simplechat/ChatAsset', true) %}
+{% set asset = register_asset_bundle('frontend/assets/ChatAsset', true) %}
 
 {{ set(this, 'params', this.params|merge({'user': user})) }}
 {{ set(this, 'params', this.params|merge({'users': users})) }}
@@ -10,7 +10,7 @@
     <div class="loading" style="display: none">Loading&#8230;</div>
     {% set conversation = conversation_widget_begin({
         'dataProvider' : conversationDataProvider,
-        'itemView' : asset.sourcePath ~ '/tmpl/conversation.twig',
+        'itemView' : this.context.viewPath ~ '/conversation.twig',
         'options' : {
             'class' : 'conversation-wrap col-lg-3',
             'id' : 'conversations',
@@ -20,21 +20,24 @@
         'clientOptions' : {
             'loadUrl' : path(['conversations']),
             'baseUrl' : asset.baseUrl,
-            'templateUrl' : asset.baseUrl ~ '/tmpl/conversation.twig',
+            'templateUrl' : asset.baseUrl ~ 'conversation.twig',
             'itemCssClass' : 'conversation',
             'currentCssClass' : 'current',
             'unreadCssClass' : 'unread',
         }
     })
     %}
+
     {{ conversation.renderItems|raw }}
+
+
     <div id="conversations-loader" style="display: none" class="text-center">
         <img alt="Loading..." src="{{ asset.baseUrl }}/img/inf-square-loader.gif"/>
     </div>
     {{ conversation_widget_end() }}
     {% set message = message_widget_begin({
         'dataProvider' : messageDataProvider,
-        'itemView' : asset.sourcePath ~ '/tmpl/message.twig',
+        'itemView' : this.context.viewPath ~ '/message.twig',
         'formView' : this.context.viewPath ~ '/form.twig',
         'user' : user,
         'contact' : contact,
