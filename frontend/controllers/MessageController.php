@@ -2,21 +2,37 @@
 namespace frontend\controllers;
 
 //...
-use bubasuma\simplechat\controllers\DefaultController;
 
+use bubasuma\simplechat\controllers\ControllerTrait;
 use common\models\Companies;
 use common\models\Investors;
 use frontend\models\Conversation;
+use frontend\models\Message;
 use Yii;
 use yii\helpers\Url;
+use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 
 //...
 
-class MessageController extends DefaultController
+class MessageController extends Controller
 {
+    use ControllerTrait;
+
+    public function getMessageClass()
+    {
+        return Message::className();
+    }
+
+    /**
+     * @return string
+     */
+    public function getConversationClass()
+    {
+        return Conversation::className();
+    }
 
     protected $_user;
 
@@ -54,8 +70,6 @@ class MessageController extends DefaultController
             }
             $current = current($conversationDataProvider->getModels());
         }
-        //debug($current);
-       // die();
         $contact = $current['contact'];
         //debug($contact);
         if (empty($contact)) {

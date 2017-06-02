@@ -141,4 +141,21 @@ class Conversation extends \bubasuma\simplechat\db\Conversation
     {
         return Url::to(['mark-conversation-as-unread','contactId' => $this->contact_id]);
     }
+    public static function tableName()
+    {
+        return Message::tableName();
+    }
+    public function getLastMessage()
+    {
+        return $this->hasOne(Message::className(), ['id' => 'last_message_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewMessages()
+    {
+        return $this->hasMany(Message::className(), ['sender_id' => 'contact_id', 'receiver_id' => 'user_id'])
+            ->andOnCondition(['is_new' => true]);
+    }
 }
