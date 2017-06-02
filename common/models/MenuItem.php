@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "menu_item".
@@ -74,8 +75,8 @@ class MenuItem extends \yii\db\ActiveRecord
         $checkController = function ($route) use ($param) {
             return $route === $param;
         };
-        $query = MenuItem::find()->where(['menu' => 3])->all();
-        $query2 = MenuItem::find()->where(['menu' => 1])->all();
+        $query = MenuItem::find()->where(['menu' => 3, 'status'=>1])->all();
+        $query2 = MenuItem::find()->where(['menu' => 1,'status'=>1])->all();
 
         $menuArray = [];
         foreach ($query as $item) {
@@ -105,7 +106,7 @@ class MenuItem extends \yii\db\ActiveRecord
         ];
         if ($checkController('cabinet/cooperation')) {
             $menuCooperation = [];
-            $query3 = MenuItem::find()->where(['menu' => 4])->all();
+            $query3 = MenuItem::find()->where(['menu' => 4,'status'=>1])->all();
             foreach ($query3 as $item) {
                 $menuCooperation[] = [
                     'label' => $item['title'],
@@ -119,7 +120,43 @@ class MenuItem extends \yii\db\ActiveRecord
                     'items' => $menuCooperation,
                 ];
         }
+        /*if ($checkController('message')) {
+            $menuMessage = [];
+            //$query3 = MenuItem::find()->where(['menu' => 4])->all();
+            $users = [];
+            $companies = Companies::find()->where(['user_id'=>Yii::$app->getUser()->getId()])->all();
+            $investors = Investors::find()->where(['user_id'=>Yii::$app->getUser()->getId()])->all();
 
+            foreach ($companies as $userItem) {
+                $users[] = [
+                    'label' => $userItem->name,
+                    'url' => Url::to(['login-as', 'userId' => $userItem->id, 'table' => 1]),
+                    'options' => ['class' => in_array($userItem->id, $except) ? 'disabled' : ''],
+                    'linkOptions' => ['data-method' => 'post'],
+                ];
+            }
+            foreach ($investors as $userItem) {
+                $users[] = [
+                    'label' => $userItem->name,
+                    'url' => Url::to(['login-as', 'userId' => $userItem->id, 'table' => 2]),
+                    'options' => ['class' => in_array($userItem->id, $except) ? 'disabled' : ''],
+                    'linkOptions' => ['data-method' => 'post'],
+                ];
+            }
+            /*foreach ($query3 as $item) {
+                $menuMessage[] = [
+                    'label' => $item['title'],
+                    'url' => '/' . $item['href'],
+                    'active' => $checkController(strtolower($item['title']))
+                ];
+            }*/
+           /* $menuItems[] =
+                [
+                    'label' => 'Messages',
+                    'items' => $menuMessage,
+                ];
+        }
+*/
         $menuItems[] =
                 [
                     'label' => 'Search',

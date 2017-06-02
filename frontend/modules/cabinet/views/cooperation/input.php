@@ -16,14 +16,12 @@ $breadcrumbs = Breadcrumbs::widget([
 ]);
 ?>
 <section id="companies-cooperation">
-
-        <?=$this->render('_formCompany', [
-            'arrayModelCompanies' => $arrayModelCompanies,
-        ])?>
-
+    <?=$this->render('_formInput', [
+        'model' => $model,
+    ])?>
 </section>
-<section id="investors-cooperation">
-    <?=$this->render('_formInvestors', [
-        'arrayModelInvestors' =>$arrayModelInvestors,
+<section id="approved-cooperation">
+    <?=$this->render('_formInputApproved', [
+        'model' =>$modelApproved
     ])?>
 </section>

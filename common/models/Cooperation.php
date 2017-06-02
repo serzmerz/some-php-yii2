@@ -85,4 +85,10 @@ class Cooperation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+    public function getCompanies(){
+        return $this->hasMany(Companies::className(), ['id'=> 'cooperation_id']);
+    }
+    public function getInvestors(){
+        return $this->hasMany(Investors::className(), ['id'=> 'cooperation_id']);
+    }
 }

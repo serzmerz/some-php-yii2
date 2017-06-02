@@ -24,23 +24,31 @@ class MessageController extends DefaultController
 
     protected $_table;
 
+    protected $_table_received;
+
+    public $layout = 'tangle.php';
+
     public function actionIndex($contactId = null)
     {
-        $this->setUser(5,1);
 
-        $user = $this->user;
+        //$this->setUser(5,1);
+        //$this->setUser((int)$id_user,(int)$id_table);
+        //$user = $this->user;
+        $user = $this->getUser();
         //debug($user);
-        //$user = Yii::$app->getUser();
+        //die();
         if ($contactId == $user['id']) {
             throw new ForbiddenHttpException('You cannot open this conversation');
         }
         if (isset($contactId)) {
-            $current = new Conversation(['user_id' => $user['id'],'table_sender'=>$this->_table, 'contact_id' => $contactId, 'table_contact' => 2]);
+            $current = new Conversation(['user_id' => $user['id'],'table_sender'=>$this->_table,
+                'contact_id' => $contactId, 'table_contact' => $this->_table_received]);
         }
+
         /** @var $conversationClass Conversation */
         $conversationClass = $this->conversationClass;
-        $conversationDataProvider = $conversationClass::get($user['id'], $this->_table, 8);
-        debug($conversationDataProvider);
+        $conversationDataProvider = $conversationClass::get($user['id'], $this->_table_received, 8);
+        //debug($conversationDataProvider);
         //debug($conversationDataProvider);
         if (!isset($current)) {
             if (0 == $conversationDataProvider->getTotalCount()) {
@@ -48,16 +56,19 @@ class MessageController extends DefaultController
             }
             $current = current($conversationDataProvider->getModels());
         }
-        debug($current);
+        //debug($current);
+       // die();
         $contact = $current['contact'];
-        debug($contact);
+        //debug($contact);
         if (empty($contact)) {
             throw new NotFoundHttpException();
         }
         $this->view->title = $contact['name'];
         /** @var $messageClass Message */
         $messageClass = $this->messageClass;
-        $messageDataProvider = $messageClass::get($user['id'], $contact['id'], 10);
+        $messageDataProvider = $messageClass::get($user['id'],$this->_table,
+            $contact['id'],$this->_table_received, 10);
+        //debug($messageDataProvider);
         $users = $this->getUsers([$user['id'], $contact['id']]);
         return $this->render(
             'index.twig',
@@ -69,19 +80,20 @@ class MessageController extends DefaultController
      */
     public function getUser()
     {
-        if (null === $this->_user) {
+        //if (null === $this->_user) {
 
-            if(\Yii::$app->session->get($this->module->id . '_table', 1) === 1){
-                $this->_user = Companies::findOne(\Yii::$app->session->get($this->module->id . '_user', 1));
-                $this->_table = 1;
-            }
-               if(\Yii::$app->session->get($this->module->id . '_table', 1) === 2){
-                   $this->_user = Investors::findOne(\Yii::$app->session->get($this->module->id . '_user', 1));
-               $this->_table = 2;
-            }
+        $this->_table = \Yii::$app->session->get($this->module->id . '_table', 1);
+        if($this->_table === 1)
+        $this->_user = Companies::findOne(\Yii::$app->session->
+        get($this->module->id . '_user', 1));
+        else $this->_user = Investors::findOne(\Yii::$app->session->
+        get($this->module->id . '_user', 1));
+                $this->_table_received = $this->_table === 1 ? 2 : 1;
                //$this->_user = User::findIdentity(Yii::$app->getUser()->getId());
-        }
-        return $this->_user;
+        //}
+        //debug($this->_user);
+        //die();
+       return $this->_user;
     }
 
     /**
@@ -91,13 +103,12 @@ class MessageController extends DefaultController
      */
     public function setUser($userId, $table)
     {
-        \Yii::$app->session->set($this->module->id . '_user', $userId);
-        \Yii::$app->session->set($this->module->id . '_table', $table);
-
+        \Yii::$app->session->set($this->module->id . '_user', (int)$userId);
+        \Yii::$app->session->set($this->module->id . '_table', (int)$table);
     }
     public function actionLoginAs($userId, $table)
     {
-        $this->setUser($userId, $table);
+        $this->setUser((int)$userId, (int)$table);
         return $this->redirect(['index']);
     }
 
@@ -127,4 +138,41 @@ class MessageController extends DefaultController
         return $users;
     }
 
+    public function actionCreateMessage($contactId)
+    {
+        $userId = $this->user['id'];
+        $userTable = $this->_table;
+        $receivedTable = $this->_table_received;
+        if ($userId == $contactId) {
+            throw new ForbiddenHttpException('You cannot send a message in this conversation');
+        }
+        $text = \Yii::$app->request->post('text');
+        /** @var $messageClass Message */
+        $messageClass = $this->messageClass;
+        return $messageClass::create($userId,$userTable,$contactId,$receivedTable, $text);
+    }
+
+    public function actionMessages($contactId)
+    {
+        $userId = $this->user['id'];
+        $request = \Yii::$app->request;
+        $limit = $request->get('limit', $request->post('limit'));
+        $key = $request->get('key', $request->post('key'));
+        $history = strcmp('new', $request->get('type', $request->post('type')));
+        /** @var $messageClass Message */
+        $messageClass = $this->messageClass;
+        return $messageClass::get($userId,$this->_table,$contactId,$this->_table_received, $limit, $history, $key);
+    }
+
+    public function actionConversations()
+    {
+        $userId = $this->user['id'];
+        $request = \Yii::$app->request;
+        $limit = $request->get('limit', $request->post('limit'));
+        $key = $request->get('key', $request->post('key'));
+        $history = strcmp('new', $request->get('type', $request->post('type')));
+        /** @var $conversationClass Conversation */
+        $conversationClass = $this->conversationClass;
+        return $conversationClass::get($userId, $this->_table_received,$limit, $history, $key);
+    }
 }

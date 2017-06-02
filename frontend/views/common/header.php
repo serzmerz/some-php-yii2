@@ -29,7 +29,21 @@ use yii\helpers\Html;
         'url' => ['/cabinet/cooperation'],
         'active' => $checkController('cabinet/cooperation')
     ],*/
-
+    if(isset($this->params['users']) && isset($this->params['user'])) {
+        //debug($menuItems);
+        /*$menuItems = array_merge(
+            [
+                'label' => 'Hi, '.$this->params['user']['name'],
+                'items' => array_merge([
+                    'label' => 'Log in as'
+                ],$this->params['users'])
+            ], $menuItems);}*/
+    $menuItems = array_merge([[
+        'label' => 'Hi, '.$this->params['user']['name'],
+        'items' => array_merge(['label' => 'Log in as'],$this->params['users']),
+    ]],$menuItems);
+    //debug($menuItems);
+    }
     if (Yii::$app->user->isGuest) {
         $menuItems[] = [
             'label' => '<i class="fa fa-sign-in"></i> Log in',

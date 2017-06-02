@@ -46,6 +46,7 @@ class Companies extends \yii\db\ActiveRecord
         return 'companies';
     }
 
+
     /**
      * @inheritdoc
      */
@@ -189,4 +190,140 @@ class Companies extends \yii\db\ActiveRecord
         ];
 
     }
+
+    public static function findForOut($arrayWhereParams)
+    {
+        $query1 = Companies::find()
+            ->select('c.id id,c.name name,c.img_url img,c.description description, c.status status, st.status cop_status,
+             cooperation.id cop_id, inv.id inv_id, inv.name inv_name,
+              inv.img_url inv_img, inv.description inv_description,
+               cooperation.cooperation_table cop_table, cooperation.parent_table par_table, cooperation.created_at create')
+            ->from(Companies::tableName() . ' c')
+            ->innerJoinWith(['cooperation' => function ($query) {
+                $query->onCondition(['cooperation_table' => 1]);
+            }])
+            ->leftJoin('cooperation_statuses st', 'cooperation.cooperation_status = st.id')
+            ->leftJoin('investors inv', 'cooperation.parent_id=inv.id')
+            ->where($arrayWhereParams);
+        $query2 = Investors::find()
+            ->select('c.id id,c.name name,c.img_url img,c.description description, c.status status, st.status cop_status,
+             cooperation.id cop_id, com.id inv_id, com.name inv_name,
+             com.img_url inv_img, com.description inv_description,
+             cooperation.cooperation_table cop_table, cooperation.parent_table par_table, cooperation.created_at create')
+            ->from(Investors::tableName() . ' c')
+            ->innerJoinWith(['cooperation' => function ($query) {
+                $query->onCondition(['cooperation_table' => 2]);
+            }])
+            ->leftJoin('cooperation_statuses st', 'cooperation.cooperation_status = st.id')
+            ->leftJoin('companies com', 'cooperation.parent_id=com.id')
+            ->where($arrayWhereParams);
+        $query1->union($query2);
+
+        $clone_query = clone $query1;
+        $count = $clone_query->count();
+        $pages = new Pagination(['totalCount' => $count]);
+        //$pages->pageSize = 3;
+        $pages->pageSizeParam = false;
+        $model = $query1->offset($pages->offset)
+            ->limit($pages->limit)
+            ->orderBy(['create' => SORT_DESC])
+            ->asArray()
+            ->all();
+        return $array = [
+            'count' => $count,
+            'model' => $model,
+            'pages' => $pages,
+        ];
+    }
+
+    public static function findForOutCooperation($arrayWhereParams)
+    {
+        $query = Cooperation::find()->
+        select('c.id cop_id, c.cooperation_table cop_table, c.parent_table par_table,
+         c.created_at create, st.status cop_status, c.status status,
+         com.id id,com.name name,com.img_url img,com.description description,
+         inv.id inv_id, inv.name inv_name,
+              inv.img_url inv_img, inv.description inv_description,
+              ')->
+        from(Cooperation::tableName() . ' c')
+            ->leftJoin('cooperation_statuses st', 'c.cooperation_status = st.id')
+            ->leftJoin('companies com', 'c.cooperation_id=com.id')
+            ->leftJoin('investors inv', 'c.parent_id=inv.id')
+            ->where(array_merge(['c.cooperation_table'=>1],$arrayWhereParams));
+        $query2 = Cooperation::find()->
+        select('c.id cop_id, c.cooperation_table cop_table, c.parent_table par_table,
+         c.created_at create, st.status cop_status, c.status status,
+         com.id id,com.name name,com.img_url img,com.description description,
+         inv.id inv_id, inv.name inv_name,
+              inv.img_url inv_img, inv.description inv_description,
+              ')->
+        from(Cooperation::tableName() . ' c')
+            ->leftJoin('cooperation_statuses st', 'c.cooperation_status = st.id')
+            ->leftJoin('investors com', 'c.cooperation_id=com.id')
+            ->leftJoin('companies inv', 'c.parent_id=inv.id')
+            ->where(array_merge(['c.cooperation_table'=>2],$arrayWhereParams));
+
+
+
+        $query->union($query2);
+        $clone_query = clone $query;
+        $count = $clone_query->count();
+        $pages = new Pagination(['totalCount' => $count]);
+        //$pages->pageSize = 3;
+        $pages->pageSizeParam = false;
+        $model = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->orderBy(['create' => SORT_DESC])
+            ->asArray()
+            ->all();
+        return $array = [
+            'count' => $count,
+            'model' => $model,
+            'pages' => $pages,
+        ];
+    }
+
+    public static function findForOutApproved($arrayWhereParams)
+    {
+        $query1 = Companies::find()
+            ->select('c.id id,c.name name,c.img_url img,c.description description, c.status status, st.status cop_status,
+             cooperation.id cop_id, inv.id inv_id, inv.name inv_name,
+              inv.img_url inv_img, inv.description inv_description,
+               cooperation.cooperation_table cop_table, cooperation.parent_table par_table')
+            ->from(Companies::tableName() . ' c')
+            ->innerJoinWith(['cooperation' => function ($query) {
+                $query->onCondition(['cooperation_table' => 1]);
+            }])
+            ->leftJoin('cooperation_statuses st', 'cooperation.cooperation_status = st.id')
+            ->leftJoin('investors inv', 'cooperation.parent_id=inv.id')
+            ->where($arrayWhereParams);
+        $query2 = Investors::find()
+            ->select('c.id id,c.name name,c.img_url img,c.description description, c.status status, st.status cop_status,
+             cooperation.id cop_id, com.id inv_id, com.name inv_name,
+             com.img_url inv_img, com.description inv_description,
+             cooperation.cooperation_table cop_table, cooperation.parent_table par_table')
+            ->from(Investors::tableName() . ' c')
+            ->innerJoinWith(['cooperation' => function ($query) {
+                $query->onCondition(['cooperation_table' => 2]);
+            }])
+            ->leftJoin('cooperation_statuses st', 'cooperation.cooperation_status = st.id')
+            ->leftJoin('companies com', 'cooperation.parent_id=com.id')
+            ->where($arrayWhereParams);
+        $query1->union($query2);
+
+        $clone_query = clone $query1;
+        $count = $clone_query->count();
+        $pages = new Pagination(['totalCount' => $count]);
+        $model = $query1->offset($pages->offset)
+            ->limit($pages->limit)
+            ->orderBy(['id' => SORT_DESC])
+            ->asArray()
+            ->all();
+        return $array = [
+            'count' => $count,
+            'model' => $model,
+            'pages' => $pages,
+        ];
+    }
+
 }

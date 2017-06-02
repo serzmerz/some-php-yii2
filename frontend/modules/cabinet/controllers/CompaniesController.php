@@ -54,7 +54,6 @@ class CompaniesController extends AuthController
             ->orderBy(['c.id' => SORT_DESC])
             ->asArray()
             ->all();
-
         return $this->render('index', [
             'count' => $count,
             'models' => $models,
